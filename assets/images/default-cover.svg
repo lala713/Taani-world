@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="360" viewBox="0 0 360 360" shape-rendering="crispEdges">
+  <rect width="360" height="360" fill="#fff7db"/>
+  <rect x="22" y="22" width="316" height="316" fill="#ffd96f" stroke="#7b512f" stroke-width="10"/>
+  <rect x="70" y="80" width="144" height="144" fill="#fffaf0" stroke="#7b512f" stroke-width="8"/>
+  <rect x="206" y="58" width="28" height="160" fill="#7b512f"/>
+  <rect x="226" y="58" width="70" height="36" fill="#7b512f"/>
+  <rect x="178" y="202" width="56" height="44" fill="#f6a6b9" stroke="#7b512f" stroke-width="8"/>
+  <rect x="236" y="212" width="56" height="44" fill="#ffe0e8" stroke="#7b512f" stroke-width="8"/>
+  <text x="180" y="306" text-anchor="middle" font-family="Courier New, monospace" font-size="24" font-weight="700" fill="#7b512f">song cover</text>
+</svg>
