@@ -1,6 +1,6 @@
 // EDIT HERE: Actual submitted songs only.
 window.TAANI_PLAYLIST = {
-  fullPlaylistLink: "",
+  fullPlaylistLink: "https://open.spotify.com/playlist/1IaM0IFSFvrKiTxgeq0Xfu?si=IKyhYVorR1qbzppuQh0jww",
   songs: [
     {
       title: "You're Gonna Live Forever in Me",
@@ -64,6 +64,15 @@ window.TAANI_PLAYLIST = {
       audio: "",
       cover: "assets/images/default-cover.svg",
       link: "https://open.spotify.com/track/07XWRL42a44tqXFYZoTcFZ?si=53633feb26ff4cdf"
+    },
+    {
+      title: "Winter Bear",
+      artist: "V",
+      addedBy: "Aiman",
+      note: "",
+      audio: "",
+      cover: "assets/images/default-cover.svg",
+      link: "https://open.spotify.com/track/74ewFAgDzRkhZ7EX2eLtfZ?si=2441cbd49f12454d"
     }
   ]
 };

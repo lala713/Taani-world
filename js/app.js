@@ -948,7 +948,7 @@
       ${renderPageHeader("playlist", "A music pond with lily-pad songs, notes, covers, and links.")}
       ${fullPlaylistLink ? `
         <div class="playlist-actions">
-          <a class="external-link" href="${escapeHtml(fullPlaylistLink)}" target="_blank" rel="noopener noreferrer">Open Full Playlist</a>
+          <a class="external-link" href="${escapeHtml(fullPlaylistLink)}" target="_blank" rel="noopener noreferrer">Open Full Birthday Playlist</a>
         </div>
       ` : ""}
       <div class="content-panel location-scene playlist-layout music-pond-scene">

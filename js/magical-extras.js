@@ -4,7 +4,8 @@
 
   const pageShell = document.getElementById("pageShell");
   const birthdayMonth = 6;
-  const birthdayDay = 3;
+  const birthdayDay = 22;
+  const birthYear = 2008;
   const sectionRoutes = ["friends", "letters", "reasons", "museum", "playlist", "gift"];
   const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const coarsePointer = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
@@ -207,7 +208,7 @@
       <button class="village-prop prop-lantern-toggle" type="button" data-toggle-night aria-label="Toggle night lights"></button>
       <button class="village-prop prop-radio" type="button" data-open-ambience aria-label="Cozy ambience"></button>
       <div class="village-cake" aria-label="Birthday cake">${candleHtml}</div>
-      <div class="village-sign village-birthday-counter">Birthday +${stats.daysSince} days<br>Next in ${stats.daysUntil} days</div>
+      <div class="village-sign village-birthday-counter">22 July<br>Turning ${stats.turningAge}<br>Next in ${stats.daysUntil} days</div>
       <div class="village-sign village-star-sign">Stars ${state.stars.length} / 20<br>Stickers ${state.stickers.length} / ${stickerDefs.length}</div>
       <div class="flower-language-patch">
         ${flowers.map(([id, name]) => `<button class="flower-meaning flower-${escapeHtml(id)}" type="button" data-flower="${escapeHtml(id)}" aria-label="${escapeHtml(name)}"></button>`).join("")}
@@ -227,9 +228,13 @@
     let last = new Date(today.getFullYear(), birthdayMonth, birthdayDay);
     if (last > start) last = new Date(today.getFullYear() - 1, birthdayMonth, birthdayDay);
     let next = new Date(today.getFullYear(), birthdayMonth, birthdayDay);
-    if (next <= start) next = new Date(today.getFullYear() + 1, birthdayMonth, birthdayDay);
+    if (next < start) next = new Date(today.getFullYear() + 1, birthdayMonth, birthdayDay);
     const dayMs = 24 * 60 * 60 * 1000;
-    return { daysSince: Math.floor((start - last) / dayMs), daysUntil: Math.ceil((next - start) / dayMs) };
+    return {
+      daysSince: Math.floor((start - last) / dayMs),
+      daysUntil: Math.ceil((next - start) / dayMs),
+      turningAge: next.getFullYear() - birthYear
+    };
   }
 
   function sparkleCake() {
