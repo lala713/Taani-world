@@ -48,7 +48,7 @@ Happy Birthday once again. I hope your 22nd of July is as lovely and wonderful a
   },
   {
     id: "ruq",
-    label: "Ruq's letter",
+    label: "Ruq's letter💗",
     from: "Ruq",
     title: "Ruq's birthday letter",
     date: "Birthday 2026",
@@ -196,7 +196,7 @@ I love you so much.
   },
   {
     id: "apo",
-    label: "Apo's letter",
+    label: "Apo's letter💗",
     from: "Apo",
     title: "Apo's birthday letter",
     date: "Birthday 2026",
@@ -235,7 +235,7 @@ Berry the admin`
   },
   {
     id: "izel",
-    label: "Izel's letter",
+    label: "Izel's letter💗",
     from: "Izel",
     title: "Izel's birthday letter",
     date: "Birthday 2026",
@@ -293,7 +293,7 @@ Don't lose it.
   },
   {
     id: "aiman",
-    label: "Aiman's letter",
+    label: "Aiman's letter💗",
     from: "Aiman",
     title: "Aiman's birthday letter",
     date: "Birthday 2026",

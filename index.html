@@ -42,13 +42,17 @@
         <i class="sign-heart heart-two" aria-hidden="true">♡</i>
       </section>
 
-      <section class="page-shell" id="pageShell" aria-live="polite"></section>
+      <section class="page-shell" id="pageShell"></section>
 
       <footer class="bottom-bar">
         <span>made with ♡ by your friends</span>
         <strong>THANK YOU FOR EXISTING ♡</strong>
-        <span class="clock-wrap">
-          <time id="worldClock">--:--</time>
+        <span class="clock-wrap" aria-label="Your local time">
+          <span class="clock-label">Your local time</span>
+          <span class="clock-stack">
+            <time id="worldClock">--:--:--</time>
+            <span class="clock-time-zone" id="worldTimeZone"></span>
+          </span>
           <button class="sound-toggle" id="soundToggle" type="button" aria-label="Toggle sound">♪</button>
         </span>
       </footer>

@@ -1,8 +1,13 @@
 (function () {
   const pageShell = document.getElementById("pageShell");
   const worldClock = document.getElementById("worldClock");
+  const worldTimeZone = document.getElementById("worldTimeZone");
   const soundToggle = document.getElementById("soundToggle");
   const audio = document.getElementById("songAudio");
+  const BIRTHDAY_MONTH_INDEX = 6;
+  const BIRTHDAY_DAY = 22;
+  const TAANI_TURNING_AGE = 17;
+  const COUNTDOWN_UNITS = ["days", "hours", "minutes", "seconds"];
 
   function fillNumberedPattern(template, number) {
     const padded = String(number).padStart(2, "0");
@@ -90,6 +95,9 @@
   };
 
   let playlistStatus = "Choose a song to start the tiny music player.";
+  let appIntervalId = null;
+  let lastClockText = "";
+  let lastTimeZoneText = "";
 
   const locations = [
     { route: "friends", label: "Friends", shortLabel: "Friends", detail: "Profiles, timers, jokes, and notes", icon: "village", x: 18, y: 68 },
@@ -182,9 +190,11 @@
     state.route = nextRoute;
     document.title = state.route === "map" ? "Taani's World" : `Taani's World - ${routeLabel(state.route)}`;
     pageShell.innerHTML = `<div class="chapter-page">${routes[state.route]()}${renderLocationFooter(state.route)}</div>`;
-    updateClock();
+    const now = new Date();
+    updateClock(now);
+    updateBirthdayUi(now);
     updateSoundButton();
-    updateFriendTimer();
+    updateFriendTimer(now);
     updatePlayerUi();
     if (routeChanged) {
       const top = state.scrollPositions[state.route] || 0;
@@ -231,6 +241,33 @@
     `;
   }
 
+  function renderBirthdayPanel() {
+    return `
+      <section class="birthday-countdown-card" data-birthday-widget aria-label="Birthday countdown to 22 July">
+        <div class="birthday-status" aria-live="polite">
+          <span class="birthday-date">Birthday: 22 July</span>
+          <strong data-birthday-status>Birthday countdown</strong>
+          <span data-birthday-detail>Turning ${TAANI_TURNING_AGE}</span>
+        </div>
+        <span class="birthday-age-badge">Turning ${TAANI_TURNING_AGE}</span>
+        <div class="birthday-countdown-grid" aria-hidden="true">
+          ${COUNTDOWN_UNITS.map((unit) => `
+            <div class="birthday-countdown-unit">
+              <strong data-birthday-unit="${unit}">0</strong>
+              <span>${unit}</span>
+            </div>
+          `).join("")}
+        </div>
+        <div class="birthday-celebration-art" aria-hidden="true">
+          <span class="birthday-cake-mini"></span>
+          <span class="birthday-sparkle birthday-sparkle-one"></span>
+          <span class="birthday-sparkle birthday-sparkle-two"></span>
+          <span class="birthday-sparkle birthday-sparkle-three"></span>
+        </div>
+      </section>
+    `;
+  }
+
   function renderMap() {
     return `
       <section class="storybook-map birthday-village" aria-label="Tiny magical birthday village">
@@ -238,6 +275,7 @@
           <span class="welcome-kicker">Welcome to</span>
           <h2>Taani's World</h2>
           <p>Choose a path through friends, letters, the love garden, memory museum, playlist, and final gift.</p>
+          ${renderBirthdayPanel()}
           ${renderLocationNav("map", "home")}
         </div>
         <div class="map-board">
@@ -1341,9 +1379,120 @@
     return `${minutes}:${String(rest).padStart(2, "0")}`;
   }
 
-  function updateClock() {
-    const now = new Date();
-    worldClock.textContent = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  function isBirthdayToday(now) {
+    return now.getMonth() === BIRTHDAY_MONTH_INDEX && now.getDate() === BIRTHDAY_DAY;
+  }
+
+  function getNextBirthday(now) {
+    if (isBirthdayToday(now)) return null;
+
+    let birthday = new Date(
+      now.getFullYear(),
+      BIRTHDAY_MONTH_INDEX,
+      BIRTHDAY_DAY,
+      0,
+      0,
+      0,
+      0
+    );
+
+    if (birthday <= now) {
+      birthday = new Date(
+        now.getFullYear() + 1,
+        BIRTHDAY_MONTH_INDEX,
+        BIRTHDAY_DAY,
+        0,
+        0,
+        0,
+        0
+      );
+    }
+
+    return birthday;
+  }
+
+  function splitCountdown(milliseconds) {
+    let remaining = Math.max(0, milliseconds);
+    const days = Math.floor(remaining / 86400000);
+    remaining -= days * 86400000;
+    const hours = Math.floor(remaining / 3600000);
+    remaining -= hours * 3600000;
+    const minutes = Math.floor(remaining / 60000);
+    remaining -= minutes * 60000;
+    const seconds = Math.floor(remaining / 1000);
+    return { days, hours, minutes, seconds };
+  }
+
+  function calculateBirthdayState(now) {
+    if (isBirthdayToday(now)) {
+      return {
+        isBirthday: true,
+        status: "IT'S TAANI'S BIRTHDAY!",
+        detail: `Taani is turning ${TAANI_TURNING_AGE} today!`,
+        units: { days: 0, hours: 0, minutes: 0, seconds: 0 }
+      };
+    }
+
+    const birthday = getNextBirthday(now);
+    const units = splitCountdown(birthday - now);
+    return {
+      isBirthday: false,
+      status: "Birthday countdown",
+      detail: `Birthday: 22 July - Turning ${TAANI_TURNING_AGE}`,
+      units
+    };
+  }
+
+  function formatCountdownUnit(unit, value) {
+    return unit === "days" ? String(value) : String(value).padStart(2, "0");
+  }
+
+  function updateBirthdayUi(now = new Date()) {
+    const widget = document.querySelector("[data-birthday-widget]");
+    if (!widget) return;
+
+    const birthday = calculateBirthdayState(now);
+    const signature = [
+      birthday.isBirthday ? "birthday" : "countdown",
+      birthday.status,
+      birthday.detail,
+      ...COUNTDOWN_UNITS.map((unit) => `${unit}:${birthday.units[unit]}`)
+    ].join("|");
+
+    if (signature === widget.dataset.birthdaySignature) return;
+    widget.dataset.birthdaySignature = signature;
+
+    widget.classList.toggle("is-birthday", birthday.isBirthday);
+
+    const status = widget.querySelector("[data-birthday-status]");
+    const detail = widget.querySelector("[data-birthday-detail]");
+    if (status && status.textContent !== birthday.status) status.textContent = birthday.status;
+    if (detail && detail.textContent !== birthday.detail) detail.textContent = birthday.detail;
+
+    COUNTDOWN_UNITS.forEach((unit) => {
+      const node = widget.querySelector(`[data-birthday-unit="${unit}"]`);
+      const value = formatCountdownUnit(unit, birthday.units[unit]);
+      if (node && node.textContent !== value) node.textContent = value;
+    });
+  }
+
+  function updateClock(now = new Date()) {
+    const clockText = new Intl.DateTimeFormat(undefined, {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit"
+    }).format(now);
+    const timeZoneText = Intl.DateTimeFormat().resolvedOptions().timeZone || "Local time zone";
+
+    if (worldClock && clockText !== lastClockText) {
+      worldClock.textContent = clockText;
+      lastClockText = clockText;
+    }
+
+    if (worldTimeZone && timeZoneText !== lastTimeZoneText) {
+      worldTimeZone.textContent = timeZoneText;
+      lastTimeZoneText = timeZoneText;
+    }
   }
 
   function updateSoundButton() {
@@ -1353,19 +1502,18 @@
     audio.muted = state.muted;
   }
 
-  function updateFriendTimer() {
+  function updateFriendTimer(now = new Date()) {
     const timer = document.querySelector("[data-friend-timer]");
     if (!timer) return;
-    const parts = calculateFriendship(timer.dataset.friendTimer);
+    const parts = calculateFriendship(timer.dataset.friendTimer, now);
     Object.entries(parts).forEach(([key, value]) => {
       const node = timer.querySelector(`[data-timer-value="${key}"]`);
       if (node) node.textContent = value;
     });
   }
 
-  function calculateFriendship(startDate) {
+  function calculateFriendship(startDate, now = new Date()) {
     const start = new Date(`${startDate}T00:00:00`);
-    const now = new Date();
     if (Number.isNaN(start.getTime()) || start > now) {
       return { years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 };
     }
@@ -1530,13 +1678,30 @@
     updatePlayerUi();
   });
 
-  window.addEventListener("hashchange", render);
-  window.setInterval(() => {
-    updateClock();
-    updateFriendTimer();
+  function tick() {
+    const now = new Date();
+    updateClock(now);
+    updateBirthdayUi(now);
+    updateFriendTimer(now);
     updatePlayerUi();
-  }, 1000);
+  }
+
+  function startAppTicker() {
+    if (appIntervalId !== null) return;
+    tick();
+    appIntervalId = window.setInterval(tick, 1000);
+  }
+
+  function stopAppTicker() {
+    if (appIntervalId === null) return;
+    window.clearInterval(appIntervalId);
+    appIntervalId = null;
+  }
+
+  window.addEventListener("hashchange", render);
+  window.addEventListener("beforeunload", stopAppTicker, { once: true });
 
   audio.volume = 0.75;
   render();
+  startAppTicker();
 })();

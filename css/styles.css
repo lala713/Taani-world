@@ -860,9 +860,36 @@ a {
 }
 
 .clock-wrap {
-  display: inline-flex;
+  display: inline-grid;
+  grid-template-columns: auto minmax(0, auto) auto;
   align-items: center;
   gap: 8px;
+  min-width: 0;
+}
+
+.clock-label {
+  color: var(--brown);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.clock-stack {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+  line-height: 1.15;
+}
+
+.clock-stack time {
+  white-space: nowrap;
+}
+
+.clock-time-zone {
+  max-width: 220px;
+  color: #755d40;
+  font-size: 0.66rem;
+  overflow-wrap: anywhere;
 }
 
 .sound-toggle {
@@ -1100,6 +1127,169 @@ a {
   color: #65513b;
   line-height: 1.6;
 }
+
+.birthday-countdown-card {
+  position: relative;
+  width: min(900px, 100%);
+  margin: 14px auto 0;
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 3px solid var(--brown);
+  border-radius: var(--radius);
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.25) 0 6px, transparent 6px 12px),
+    rgba(255, 250, 240, 0.86);
+  box-shadow: 0 6px 0 rgba(123, 81, 47, 0.14);
+  overflow: hidden;
+}
+
+.birthday-status {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+}
+
+.birthday-date,
+.birthday-age-badge,
+.birthday-status strong {
+  font-family: var(--font-pixel);
+  font-weight: 700;
+}
+
+.birthday-date {
+  color: #755d40;
+  font-size: 0.78rem;
+}
+
+.birthday-status strong {
+  color: var(--brown);
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  line-height: 1.2;
+}
+
+.birthday-status span:last-child {
+  color: #65513b;
+  line-height: 1.35;
+}
+
+.birthday-age-badge {
+  justify-self: center;
+  min-height: 28px;
+  display: inline-grid;
+  place-items: center;
+  padding: 4px 9px;
+  border: 2px solid var(--brown);
+  border-radius: 999px;
+  background: var(--pink-2);
+  color: var(--brown);
+  font-size: 0.76rem;
+}
+
+.birthday-countdown-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.birthday-countdown-unit {
+  min-height: 74px;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 4px;
+  padding: 9px 8px;
+  border: 3px solid var(--brown);
+  border-radius: 6px;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.62);
+  overflow: hidden;
+}
+
+.birthday-countdown-unit strong {
+  color: var(--brown);
+  font-family: var(--font-pixel);
+  font-size: clamp(1.25rem, 3vw, 2.1rem);
+  line-height: 1;
+}
+
+.birthday-countdown-unit span {
+  color: #755d40;
+  font-family: var(--font-pixel);
+  font-size: 0.72rem;
+  line-height: 1.2;
+}
+
+.birthday-celebration-art {
+  display: none;
+  position: relative;
+  min-height: 58px;
+  place-items: center;
+}
+
+.birthday-countdown-card.is-birthday {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(246, 166, 185, 0.22) 0 8px, transparent 9px),
+    radial-gradient(circle at 82% 24%, rgba(248, 189, 58, 0.24) 0 7px, transparent 8px),
+    rgba(255, 250, 240, 0.9);
+}
+
+.birthday-countdown-card.is-birthday .birthday-countdown-grid {
+  display: none;
+}
+
+.birthday-countdown-card.is-birthday .birthday-celebration-art {
+  display: grid;
+}
+
+.birthday-cake-mini {
+  position: relative;
+  width: 62px;
+  height: 42px;
+  border: 3px solid var(--brown);
+  background:
+    linear-gradient(90deg, var(--pink-2) 0 14px, var(--paper) 14px 28px, var(--pink-2) 28px 42px, var(--paper) 42px),
+    var(--butter);
+  box-shadow: 0 5px 0 rgba(123, 81, 47, 0.16);
+}
+
+.birthday-cake-mini::before {
+  content: "";
+  position: absolute;
+  left: 26px;
+  top: -20px;
+  width: 6px;
+  height: 18px;
+  background: var(--brown);
+  box-shadow: 10px 3px 0 var(--brown), -10px 3px 0 var(--brown);
+}
+
+.birthday-cake-mini::after {
+  content: "";
+  position: absolute;
+  left: 27px;
+  top: -27px;
+  width: 8px;
+  height: 8px;
+  background: var(--sun);
+  box-shadow: 10px 3px 0 var(--sun), -10px 3px 0 var(--sun);
+  transform: rotate(45deg);
+  animation: twinkle 1.2s steps(2, end) infinite;
+}
+
+.birthday-sparkle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--gold);
+  background: var(--lily);
+  transform: rotate(45deg);
+  animation: twinkle 1.8s steps(2, end) infinite;
+}
+
+.birthday-sparkle-one { left: 22%; top: 16px; }
+.birthday-sparkle-two { right: 24%; top: 12px; animation-delay: 0.45s; }
+.birthday-sparkle-three { right: 38%; bottom: 6px; animation-delay: 0.9s; }
 
 .map-board {
   position: relative;
@@ -4047,6 +4237,15 @@ input[type="range"] {
     padding: 10px;
   }
 
+  .clock-wrap {
+    width: 100%;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .clock-time-zone {
+    max-width: 100%;
+  }
+
   .topbar-brand {
     font-size: 0.85rem;
   }
@@ -4088,6 +4287,14 @@ input[type="range"] {
 
   .map-board {
     min-height: 760px;
+  }
+
+  .birthday-countdown-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .birthday-countdown-unit {
+    min-height: 68px;
   }
 
   .map-location {
@@ -4378,6 +4585,32 @@ input[type="range"] {
     display: grid;
     grid-template-columns: 1fr;
     gap: 8px;
+  }
+
+  .clock-wrap {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
+  .clock-label {
+    grid-column: 1 / -1;
+  }
+
+  .birthday-countdown-card {
+    padding: 11px;
+  }
+
+  .birthday-countdown-grid {
+    gap: 8px;
+  }
+
+  .birthday-countdown-unit {
+    min-height: 64px;
+    padding: 8px 6px;
+  }
+
+  .birthday-countdown-unit span {
+    font-size: 0.66rem;
   }
 
   .progress-wrap,
